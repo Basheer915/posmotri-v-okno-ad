@@ -1,0 +1,445 @@
+/* Global styles */
+
+/*
+  box-sizing: border-box makes width/height include padding and borders.
+  This makes layout math much easier (e.g., a 200px wide box stays 200px
+  even if you add padding). We apply it to *everything*, including
+  ::before and ::after pseudo-elements.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/*
+  block-size is the "logical" version of height. In a horizontal
+  writing mode (like English) it behaves like height. Using logical
+  properties makes the CSS easier to adapt to vertical writing modes.
+  100% means the <html> fills the viewport height.
+*/
+html {
+  block-size: 100%;
+}
+
+/*
+  Reset default browser margins/paddings on common text elements
+  so we can control spacing consistently across browsers.
+*/
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+li,
+blockquote,
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+/* Remove default bullet points / numbers from lists. */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Videos should never overflow their container. */
+video {
+  width: 100%;
+}
+
+/* Utility classes */
+
+/*
+  ".visually-hidden" hides an element from sighted users BUT keeps it
+  accessible to screen readers (unlike display:none or visibility:hidden).
+  Useful for things like the real checkbox that sits under a styled
+  pseudo-checkbox. The clip/clip-path combo is the classic pattern.
+*/
+.visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  inline-size: 1px;
+  block-size: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Styles */
+
+/*
+  The outer page: a flex container centered horizontally.
+  margin:auto + flex + align-items:center is a common way to
+  center a fixed-width page block.
+*/
+.page {
+  display: flex;
+  align-items: center;
+  margin: auto;
+  color: #fff;
+  font-family: 'Fira Sans Condensed', sans-serif;
+  font-size: 18px;
+  background-color: #1b1919;
+  inline-size: 1200px;   /* logical version of width */
+  block-size: 100%;      /* logical version of height */
+}
+
+/*
+  Two-column layout: video + form on the left, details on the right.
+  gap adds space between the two columns without margins.
+*/
+.content {
+  display: flex;
+  gap: 30px;
+  margin: 0 30px;
+  inline-size: 100%;
+}
+
+/*
+  align-self: flex-end pushes this column to the bottom of the flex
+  container. So the video/result block sticks to the bottom while
+  the details column can grow upward.
+*/
+.result {
+  align-self: flex-end;
+}
+
+/*
+  position: relative makes this box a positioning context, so any
+  absolutely-positioned child (e.g. a custom play button) anchors
+  to this container rather than the page.
+*/
+.result__video-container {
+  position: relative;
+  inline-size: 711px;
+  block-size: 386px;
+  margin: 0 0 16px;
+}
+
+/*
+  Flex row with space-between: the first fieldset goes left, the
+  submit button goes right. align-items: flex-start keeps them at
+  the top of the row.
+*/
+.search-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+/*
+  object-fit: cover makes the video fill the container while
+  preserving aspect ratio (cropping if necessary, instead of
+  stretching). object-position: center crops from the middle.
+*/
+.result__video {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/*
+  Flex column so the legend/label stack vertically.
+  border: none removes the default <fieldset> border.
+*/
+.search-form__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border: none;
+}
+
+/* Reset the default bold of <legend>. */
+.search-form__fieldset-title {
+  font-weight: 400;
+  font-size: 18px;
+}
+
+/*
+  A label is clickable. width: fit-content stops the hover underline
+  from extending across the whole row. cursor: pointer shows the
+  hand icon on hover.
+*/
+.search-form__label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  cursor: pointer;
+}
+
+/* Underline the label text on hover. */
+.search-form__label:hover .search-form__label-text {
+  text-decoration: underline 1px #FFF;
+  text-underline-offset: 5px;
+}
+
+/*
+  :has() lets us style the label WHEN any descendant matches the
+  inner selector. So this applies an outline to the label when the
+  input inside it is focused via keyboard (:focus-visible).
+  Great for accessibility.
+*/
+.search-form__label:has(:focus-visible) {
+  outline: 1px solid #FFF;
+  outline-offset: 1px;
+}
+
+/*
+  Text input styled to look like just a bottom line (top + bottom
+  borders only). appearance: none strips native OS styling.
+  currentColor inherits the text color from the parent.
+*/
+.search-form__textfield {
+  border-top: 1px solid #FFF;
+  border-right: none;
+  border-bottom: 1px solid #FFF;
+  border-left: none;
+  padding: 2px 0;
+  color: currentColor;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  background-color: transparent;
+  inline-size: 225px;
+  appearance: none;
+}
+
+/* Placeholder is made semi-transparent so it reads as "hint" text. */
+.search-form__textfield::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+/* Slight outline while the field is pressed/active. */
+.search-form__textfield:active {
+  outline: 1px solid #FFF;
+}
+
+/* Remove default focus ring because we draw our own (via :has above). */
+.search-form__textfield:focus {
+  outline: none;
+}
+
+.search-form__textfield:focus-visible {
+  outline: none;
+}
+
+/* Checkbox options in a horizontal row. */
+.search-form__checkbox-list {
+  display: flex;
+  gap: 15px;
+}
+
+/*
+  Re-hide the real checkbox more aggressively. Note this overrides
+  the generic .visually-hidden a bit (e.g. clip-path: none).
+  The real input still receives focus/clicks for accessibility.
+*/
+.search-form__checkbox.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: none;
+  overflow: hidden;
+}
+
+/*
+  The custom square box the user actually sees. flex centers the
+  inner dot. flex-shrink: 0 prevents it from shrinking in tight rows.
+*/
+.search-form__pseudo-checkbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #FFF;
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+}
+
+/*
+  When the real checkbox is checked, we draw a solid square inside
+  the pseudo-checkbox using ::after. The "+" is the adjacent sibling
+  combinator — the pseudo-checkbox must come right after the input
+  in the HTML.
+*/
+.search-form__checkbox:checked + .search-form__pseudo-checkbox::after {
+  content: '';
+  display: block;
+  background-color: #FFF;
+  width: 13px;
+  height: 13px;
+}
+
+/* Base button style — transparent with a white border. */
+.button {
+  border: 1px solid #FFF;
+  padding: 6px 0;
+  color: #FFF;
+  font-family: 'Fira Sans Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  text-align: center;
+  background-color: transparent;
+  cursor: pointer;
+  inline-size: 100%;
+}
+
+/* Pressed state. */
+.button:active {
+  background-color: #545050;
+}
+
+/* Hover: underline effect. */
+.button:hover {
+  text-decoration: underline 1px #FFF;
+}
+
+/* Remove native outline; we draw our own below. */
+.button:focus {
+  outline: none;
+}
+
+/* :focus-visible only shows on keyboard focus, not mouse click — good UX. */
+.button:focus-visible {
+  outline: 1px solid #FFF;
+  outline-offset: 1px;
+}
+
+/* The submit button sits at the bottom of the flex row, fixed width. */
+.search-form__submit-button {
+  align-self: flex-end;
+  inline-size: 194px;
+}
+
+/* Right-hand column takes all remaining width. */
+.content__details {
+  inline-size: 100%;
+}
+
+/* Large uppercase title, with tight line-height. */
+.title {
+  padding: 0 0 26px;
+  color: #FFF;
+  font-family: Oswald, sans-serif;
+  font-weight: 700;
+  font-size: 75px;
+  line-height: 70.5px;
+  text-transform: uppercase;
+}
+
+/* A muted/gray highlight word in the title. */
+.content__accent {
+  color: #545050;
+}
+
+/* scrollbar-width removes scrollbar, but only works in Firefox */
+/* https://caniuse.com/?search=scrollbar-width */
+
+/*
+  The list scrolls vertically but we hide the scrollbar visually.
+  position: relative is often used so absolutely positioned items
+  inside can anchor to the scrolling container.
+*/
+.content__list {
+  position: relative;
+  overflow-y: scroll;
+  block-size: 298px;
+  scrollbar-width: none;
+}
+
+/* Removes scrollbar for most other browsers */
+/* https://caniuse.com/?search=webkit-scrollbar */
+.content__list::-webkit-scrollbar {
+  display: none;
+}
+
+/* Space every card except the last one. */
+.content__list-item:not(:last-child) {
+  margin: 0 0 30px;
+}
+
+/* The whole card is a link. margin: 2px leaves room for focus outline. */
+.content__card-link {
+  display: block;
+  margin: 2px;
+  text-decoration: none;
+}
+
+/* Active/pressed state of the card. */
+.content__card-link:active {
+  background-color: #545050;
+}
+
+.content__card-link:hover {
+  text-decoration: underline 1px #FFF;
+}
+
+.content__card-link:focus {
+  outline: none;
+}
+
+.content__card-link:focus-visible {
+  outline: 1px solid #FFF;
+}
+
+/*
+  Modifier class for the "current" / selected card.
+  BEM convention: block__element_modifier.
+*/
+.content__card-link_current {
+  background-color: #545050;
+}
+
+/* Card = text block on the left + thumbnail on the right. */
+.content__video-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Card title — big Oswald, uppercase, tight line-height. */
+.content__video-card-title {
+  padding: 2px 2px 5px;
+  color: #FFF;
+  font-family: Oswald, sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1;
+  text-transform: uppercase;
+  hyphens: auto;   /* allow hyphenation when words wrap */
+}
+
+/* Card description — smaller body text. */
+.content__video-card-description {
+  padding: 0 2px;
+  color: #FFF;
+  font-weight: 400;
+  line-height: 16.2px;
+}
+
+/*
+  Thumbnail: fixed size, cover-cropped, and flex-shrink: 0 so it
+  never gets squeezed by long titles in the flex row.
+*/
+.content__video-card-thumbnail {
+  inline-size: 194px;
+  block-size: 103px;
+  object-fit: cover;
+  object-position: center;
+  flex-shrink: 0;
+}
